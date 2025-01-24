@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Neobrutalism custom styles */
+.neo-shadow {
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.neo-shadow:hover {
+  box-shadow: 12px 12px 0px 0px rgba(0, 0, 0, 1);
+}
+
+@keyframes growWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--target-width);
+  }
+}
+
+/* Add to your global CSS file */
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Optional: If you want to allow scrolling but prevent bounce/rubber-band effect */
+body {
+  overflow-y: auto;
+}
+
+/* Prevent pull-to-refresh on mobile browsers */
+body {
+  overscroll-behavior-y: contain;
+}
+
+/* Prevent text selection on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Allow scrolling in specific containers if needed */
+.scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Add to your global CSS file */
+@media (max-width: 400px) {
+  html {
+    font-size: 14px; /* Slightly reduce base font size for very small screens */
+  }
+  
+  /* Prevent zoom on input focus in iOS */
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
+/* Improve touch targets */
+button, a {
+  min-height: 44px; /* Minimum touch target size */
+  min-width: 44px;
+}
+
+/* Prevent pull-to-refresh on iOS */
+body {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
