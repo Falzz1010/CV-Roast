@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { DropZone } from './components/DropZone';
 import { ScoreCard } from './components/ScoreCard';
 import { Suggestions } from './components/Suggestions';
@@ -23,96 +23,64 @@ const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 function App() {
   const [analysis, setAnalysis] = useState<CVAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(0);
 
   // Move defaultSuggestions here, before it's used
   const defaultSuggestions = [
     {
-      title: language === 'en' ? "Add Quantifiable Achievements" : "Tambahkan Pencapaian Terukur",
-      description: language === 'en' 
-        ? "Include specific metrics, numbers, and measurable achievements in your work experience. For example: 'Increased sales by 25%' or 'Managed a team of 15 people'"
-        : "Sertakan metrik, angka, dan pencapaian terukur dalam pengalaman kerja Anda. Contoh: 'Meningkatkan penjualan sebesar 25%' atau 'Mengelola tim beranggotakan 15 orang'",
-      impact: language === 'en'
-        ? "Makes your accomplishments more credible and helps you stand out from other candidates"
-        : "Membuat pencapaian Anda lebih kredibel dan membantu Anda menonjol dari kandidat lain",
+      title: t('suggestions.quantifiableAchievements.title'),
+      description: t('suggestions.quantifiableAchievements.description'),
+      impact: t('suggestions.quantifiableAchievements.impact'),
       priority: "high",
       category: "impact"
     },
     {
-      title: language === 'en' ? "Enhance Professional Summary" : "Tingkatkan Ringkasan Profesional",
-      description: language === 'en'
-        ? "Add a powerful 3-4 line summary at the top that highlights your key expertise, years of experience, and unique value proposition"
-        : "Tambahkan ringkasan 3-4 baris yang kuat di bagian atas yang menyoroti keahlian utama, tahun pengalaman, dan nilai unik Anda",
-      impact: language === 'en'
-        ? "Quickly captures recruiter attention and sets the tone for your CV"
-        : "Cepat menarik perhatian recruiter dan menentukan kesan untuk CV Anda",
+      title: t('suggestions.enhanceProfessionalSummary.title'),
+      description: t('suggestions.enhanceProfessionalSummary.description'),
+      impact: t('suggestions.enhanceProfessionalSummary.impact'),
       priority: "high",
       category: "content"
     },
     {
-      title: language === 'en' ? "Optimize ATS Keywords" : "Optimalkan Kata Kunci ATS",
-      description: language === 'en'
-        ? "Include relevant industry keywords, technical skills, and job-specific terms throughout your CV. Match them with the job description"
-        : "Sertakan kata kunci industri yang relevan, keahlian teknis, dan istilah spesifik pekerjaan di seluruh CV Anda. Sesuaikan dengan deskripsi pekerjaan",
-      impact: language === 'en'
-        ? "Improves your CV's visibility in ATS systems and increases chances of getting shortlisted"
-        : "Meningkatkan visibilitas CV Anda dalam sistem ATS dan meningkatkan peluang masuk shortlist",
+      title: t('suggestions.optimizeATSKeywords.title'),
+      description: t('suggestions.optimizeATSKeywords.description'),
+      impact: t('suggestions.optimizeATSKeywords.impact'),
       priority: "high",
       category: "ats"
     },
     {
-      title: language === 'en' ? "Improve Formatting Consistency" : "Tingkatkan Konsistensi Format",
-      description: language === 'en'
-        ? "Ensure consistent font sizes, bullet points, date formats, and spacing throughout your CV. Use clean, ATS-friendly fonts like Arial or Calibri"
-        : "Pastikan ukuran font, poin bullet, format tanggal, dan spasi yang konsisten di seluruh CV Anda. Gunakan font yang bersih dan ramah ATS seperti Arial atau Calibri",
-      impact: language === 'en'
-        ? "Enhances readability and ensures proper parsing by ATS systems"
-        : "Meningkatkan keterbacaan dan memastikan penguraian yang tepat oleh sistem ATS",
+      title: t('suggestions.improveFormattingConsistency.title'),
+      description: t('suggestions.improveFormattingConsistency.description'),
+      impact: t('suggestions.improveFormattingConsistency.impact'),
       priority: "medium",
       category: "format"
     },
     {
-      title: language === 'en' ? "Strengthen Action Verbs" : "Perkuat Kata Kerja Aktif",
-      description: language === 'en'
-        ? "Begin achievement bullets with strong action verbs like 'Spearheaded', 'Implemented', 'Developed' instead of passive language"
-        : "Mulai poin pencapaian dengan kata kerja aktif yang kuat seperti 'Memimpin', 'Mengimplementasikan', 'Mengembangkan' alih-alih bahasa pasif",
-      impact: language === 'en'
-        ? "Makes your achievements more impactful and demonstrates leadership"
-        : "Membuat pencapaian Anda lebih berpengaruh dan menunjukkan kepemimpinan",
+      title: t('suggestions.strengthenActionVerbs.title'),
+      description: t('suggestions.strengthenActionVerbs.description'),
+      impact: t('suggestions.strengthenActionVerbs.impact'),
       priority: "medium",
       category: "content"
     },
     {
-      title: language === 'en' ? "Add Technical Skills Section" : "Tambahkan Bagian Keahlian Teknis",
-      description: language === 'en'
-        ? "Create a dedicated technical skills section grouping skills by category (e.g., Programming Languages, Tools, Methodologies)"
-        : "Buat bagian keahlian teknis khusus yang mengelompokkan keahlian berdasarkan kategori (mis., Bahasa Pemrograman, Alat, Metodologi)",
-      impact: language === 'en'
-        ? "Makes it easier for recruiters and ATS to identify your technical capabilities"
-        : "Mempermudah recruiter dan ATS mengidentifikasi kemampuan teknis Anda",
+      title: t('suggestions.addTechnicalSkillsSection.title'),
+      description: t('suggestions.addTechnicalSkillsSection.description'),
+      impact: t('suggestions.addTechnicalSkillsSection.impact'),
       priority: "high",
       category: "skills"
     },
     {
-      title: language === 'en' ? "Enhance Education Details" : "Tingkatkan Detail Pendidikan",
-      description: language === 'en'
-        ? "Include relevant coursework, projects, academic achievements, and GPA (if above 3.5) in your education section"
-        : "Sertakan mata kuliah relevan, proyek, prestasi akademik, dan IPK (jika di atas 3,5) di bagian pendidikan Anda",
-      impact: language === 'en'
-        ? "Provides a fuller picture of your academic background and relevant skills"
-        : "Memberikan gambaran lebih lengkap tentang latar belakang akademik dan keahlian relevan Anda",
+      title: t('suggestions.enhanceEducationDetails.title'),
+      description: t('suggestions.enhanceEducationDetails.description'),
+      impact: t('suggestions.enhanceEducationDetails.impact'),
       priority: "medium",
       category: "content"
     },
     {
-      title: language === 'en' ? "Add Certifications Section" : "Tambahkan Bagian Sertifikasi",
-      description: language === 'en'
-        ? "Create a dedicated section for professional certifications, including name, issuing organization, and date obtained"
-        : "Buat bagian khusus untuk sertifikasi profesional, termasuk nama, organisasi penerbit, dan tanggal diperoleh",
-      impact: language === 'en'
-        ? "Validates your skills and shows commitment to professional development"
-        : "Memvalidasi keahlian Anda dan menunjukkan komitmen untuk pengembangan profesional",
+      title: t('suggestions.addCertificationsSection.title'),
+      description: t('suggestions.addCertificationsSection.description'),
+      impact: t('suggestions.addCertificationsSection.impact'),
       priority: "medium",
       category: "content"
     }
@@ -349,9 +317,8 @@ Analyze this CV content: ${text}`;
     setIsAnalyzing(true);
     
     try {
-      // Validate file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
-        throw new Error('File size exceeds 10MB limit');
+        throw new Error(t('errors.fileSize'));
       }
 
       // Validate file type
@@ -374,19 +341,19 @@ Analyze this CV content: ${text}`;
       toast.promise(
         analyzeCV(text),
         {
-          loading: 'AI is analyzing your CV...',
-          success: (data: CVAnalysis) => {
+          loading: t('toast.analyzing'),
+          success: (data) => {
             setAnalysis(data);
             setCurrentStep(2);
-            return 'Analysis complete! 🎉';
+            return t('toast.complete');
           },
-          error: (err) => `${err.message}`,
+          error: (err) => `${t('toast.error')}${err.message}`,
         }
       );
     } catch (error) {
       setCurrentStep(0);
       console.error('Error processing file:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to process CV file');
+      toast.error(error instanceof Error ? error.message : t('errors.processing'));
     } finally {
       setIsAnalyzing(false);
     }
@@ -394,89 +361,77 @@ Analyze this CV content: ${text}`;
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#FFECEC] to-[#FFE0E0] 
-        touch-none select-none overflow-x-hidden">
-        <div className="flex-grow p-2 sm:p-4 md:p-8 overscroll-none">
-          <LanguageSwitch />
-          <div className="max-w-7xl mx-auto space-y-3 sm:space-y-8 md:space-y-12">
-            {/* Header */}
-            <div className="text-center space-y-3 sm:space-y-6">
-              <div className="inline-block bg-[#FF90E8] border-2 sm:border-4 border-black rounded-lg sm:rounded-2xl p-2 sm:p-4 md:p-6 
-                rotate-2 hover:rotate-0 transition-transform duration-300
-                hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-                <div className="flex items-center justify-center gap-1.5 sm:gap-3 md:gap-4">
-                  <FileText size={20} className="sm:w-8 sm:h-8 md:w-12 md:h-12 text-black" />
-                  <h1 className="text-lg sm:text-3xl md:text-5xl font-black bg-white px-2 sm:px-4 py-1 sm:py-2 border-2 sm:border-4 
-                    border-black rounded-md sm:rounded-xl transform hover:scale-105 transition-transform">
-                    CV Analyzer
-                  </h1>
-                </div>
-              </div>
-              <div className="flex items-center justify-center gap-1 sm:gap-2">
-                <Sparkles className="text-yellow-500 w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6" />
-                <p className="text-xs sm:text-lg md:text-xl font-bold text-gray-800 bg-[#FFF3B2] px-2 sm:px-4 py-1 sm:py-2 
-                  border-[1.5px] sm:border-2 border-black rounded-md sm:rounded-lg transform -rotate-1
-                  hover:rotate-0 transition-transform">
-                  Powered by Gemini AI
-                </p>
-                <Sparkles className="text-yellow-500 w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+      <div className="min-h-screen bg-[#FFECEC] px-4 sm:p-8 relative">
+        <LanguageSwitch />
+        <div className="max-w-6xl mx-auto space-y-6 sm:space-y-12 relative">
+          {/* Header Section */}
+          <div className="text-center space-y-2 xs:space-y-4 sm:space-y-6">
+            <div className="inline-block bg-[#FF90E8] border-2 sm:border-4 border-black rounded-lg sm:rounded-2xl 
+              p-2 xs:p-3 sm:p-4 md:p-6 rotate-2 hover:rotate-0 transition-transform duration-300">
+              <div className="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 md:gap-4">
+                <FileText className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 text-black" />
+                <h1 className="text-base xs:text-lg sm:text-3xl md:text-5xl font-black bg-white 
+                  px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 
+                  border-2 sm:border-4 border-black rounded-md sm:rounded-xl">
+                  {t('header.title')}
+                </h1>
               </div>
             </div>
-
-            {/* Description */}
-            <div className="text-center max-w-2xl mx-auto px-2 sm:px-0">
-              <p className="text-xs sm:text-lg md:text-xl text-gray-700 bg-white px-2 sm:px-6 py-1.5 sm:py-3 
-                rounded-md sm:rounded-xl border-[1.5px] sm:border-2 border-black
-                shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
-                transform hover:-translate-y-1 transition-transform
-                select-text">
-                Upload your CV and get instant AI-powered feedback to make it stand out! 🚀
+            
+            <div className="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2">
+              <Sparkles className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 text-yellow-500" />
+              <p className="text-xs xs:text-sm sm:text-lg md:text-xl font-bold text-gray-800 
+                bg-[#FFF3B2] px-2 xs:px-3 sm:px-4 py-1 sm:py-2 
+                border-[1.5px] sm:border-2 border-black rounded-md sm:rounded-lg transform -rotate-1">
+                {t('header.subtitle')}
               </p>
+              <Sparkles className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 text-yellow-500" />
             </div>
+          </div>
 
-            {/* Progress Steps */}
-            <div className="flex justify-center w-full px-1 sm:px-0">
-              <div className="w-full max-w-2xl">
-                <ProgressSteps currentStep={currentStep} />
-              </div>
+          {/* Description */}
+          <div className="text-center max-w-2xl mx-auto px-2 sm:px-0">
+            <p className="text-xs sm:text-lg md:text-xl text-gray-700 bg-white px-2 sm:px-6 py-1.5 sm:py-3 
+              rounded-md sm:rounded-xl border-[1.5px] sm:border-2 border-black
+              shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
+              transform hover:-translate-y-1 transition-transform
+              select-text">
+              {t('header.description')}
+            </p>
+          </div>
+
+          {/* Progress Steps */}
+          <div className="flex justify-center w-full px-1 sm:px-0">
+            <div className="w-full max-w-2xl">
+              <ProgressSteps currentStep={currentStep} />
             </div>
+          </div>
 
-            {/* Main Content */}
-            <div className="grid gap-3 sm:gap-6 md:gap-8 lg:grid-cols-2">
-              <div className="space-y-3 sm:space-y-6 md:space-y-8">
-                <DropZone onFileUpload={handleFileUpload} isAnalyzing={isAnalyzing} />
-                {analysis && <ScoreCard score={analysis.score} />}
-              </div>
-              
-              <div className="space-y-3 sm:space-y-6 md:space-y-8">
-                {analysis && analysis.suggestions && analysis.suggestions.length > 0 && (
-                  <Suggestions suggestions={analysis.suggestions} />
-                )}
-                {analysis && <Keywords keywords={analysis.keywords} />}
-              </div>
+          {/* Main Content Grid */}
+          <div className="grid gap-3 xs:gap-4 sm:gap-6 md:gap-8 lg:grid-cols-2">
+            <div className="space-y-3 xs:space-y-4 sm:space-y-6 md:space-y-8">
+              <DropZone onFileUpload={handleFileUpload} isAnalyzing={isAnalyzing} />
+              {analysis && <ScoreCard score={analysis.score} />}
+            </div>
+            
+            <div className="space-y-3 xs:space-y-4 sm:space-y-6 md:space-y-8">
+              {analysis && analysis.suggestions && analysis.suggestions.length > 0 && (
+                <Suggestions suggestions={analysis.suggestions} />
+              )}
+              {analysis && <Keywords keywords={analysis.keywords} />}
             </div>
           </div>
         </div>
         <Footer />
-        <Toaster 
-          position="bottom-right"
-          toastOptions={{
-            className: 'text-xs sm:text-base touch-none',
-            duration: 3000,
-            style: {
-              maxWidth: '90vw',
-              margin: '0 auto',
-              userSelect: 'none',
-              padding: '8px',
-            },
-          }} 
-        />
+        <Toaster position="bottom-right" />
       </div>
     </LanguageProvider>
   );
 }
 
 export default App;
+
+
 
 
 

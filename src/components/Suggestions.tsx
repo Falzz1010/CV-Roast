@@ -1,5 +1,6 @@
 import React from 'react';
 import { Lightbulb, ArrowRight, AlertCircle, CheckCircle2, Info } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Suggestion {
   title: string;
@@ -14,6 +15,8 @@ interface SuggestionsProps {
 }
 
 export const Suggestions: React.FC<SuggestionsProps> = ({ suggestions }) => {
+  const { t } = useLanguage();
+
   const defaultSuggestions: Suggestion[] = [
     {
       title: "Add Quantifiable Achievements",
@@ -72,16 +75,11 @@ export const Suggestions: React.FC<SuggestionsProps> = ({ suggestions }) => {
         <div className="bg-white p-2 border-2 border-black rounded-lg transform rotate-3">
           <Lightbulb className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-black">Smart Suggestions</h2>
+        <h2 className="text-3xl font-black">{t('suggestions.title')}</h2>
       </div>
-
-      {/* Summary Section */}
-      <div className="bg-white border-3 border-black rounded-xl p-4 mb-6">
-        <h3 className="font-bold text-lg mb-2">Analysis Summary</h3>
-        <p className="text-gray-700">
-          Based on our analysis, here are key areas for improvement in your CV. 
-          Focus on these suggestions to make your CV more impactful and ATS-friendly.
-        </p>
+      
+      <div className="text-sm text-gray-600 mb-4">
+        {t('suggestions.description')}
       </div>
       
       <ul className="space-y-4">
@@ -137,5 +135,6 @@ export const Suggestions: React.FC<SuggestionsProps> = ({ suggestions }) => {
     </div>
   );
 };
+
 
 

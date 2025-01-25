@@ -30,9 +30,9 @@ export const DropZone: React.FC<DropZoneProps> = ({ onFileUpload, isAnalyzing })
     <div
       {...getRootProps()}
       className={`
-        relative border-4 border-black bg-[#93FFAB] p-12 rounded-2xl
-        shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
-        hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]
+        relative border-2 sm:border-4 border-black bg-[#93FFAB] p-4 sm:p-8 md:p-12 rounded-xl sm:rounded-2xl
+        shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+        hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]
         transition-all cursor-pointer
         ${isDragActive ? 'bg-[#CBFFD3]' : ''}
         ${isAnalyzing ? 'opacity-75 cursor-not-allowed' : ''}
@@ -40,23 +40,23 @@ export const DropZone: React.FC<DropZoneProps> = ({ onFileUpload, isAnalyzing })
       `}
     >
       <input {...getInputProps()} />
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-2 sm:gap-4">
         {isAnalyzing ? (
-          <Loader2 size={48} className="text-black animate-spin" />
+          <Loader2 size={32} className="sm:w-12 sm:h-12 text-black animate-spin" />
         ) : (
-          <Upload size={48} className="text-black" />
+          <Upload size={32} className="sm:w-12 sm:h-12 text-black" />
         )}
-        <div className="bg-white border-2 border-black rounded-lg px-4 py-2 transform rotate-1">
-          <p className="text-xl font-bold text-black">
+        <div className="bg-white border-2 border-black rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 transform rotate-1">
+          <p className="text-sm sm:text-xl font-bold text-black">
             {isDragActive
-              ? t('dropzone.drop')
+              ? t('dropzone.dragActive')
               : isAnalyzing
               ? t('dropzone.analyzing')
-              : t('dropzone.title')}
+              : t('dropzone.default')}
           </p>
         </div>
-        <p className="text-sm font-medium text-gray-800 bg-white px-3 py-1 border-2 border-black rounded-full transform -rotate-1">
-          {t('dropzone.formats')}
+        <p className="text-xs sm:text-sm font-medium text-gray-800 bg-white px-2 sm:px-3 py-1 border-2 border-black rounded-full transform -rotate-1">
+          {t('dropzone.supportedFormats')}
         </p>
       </div>
     </div>

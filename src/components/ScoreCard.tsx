@@ -1,5 +1,6 @@
 import React from 'react';
 import { Award, Zap } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface CVScore {
   completeness: number;
@@ -14,6 +15,8 @@ interface ScoreCardProps {
 }
 
 export const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
+  const { t } = useLanguage();
+
   const defaultScore = {
     ...score,
     completeness: score.completeness || 0,
@@ -53,41 +56,43 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
   };
 
   return (
-    <div className="border-4 border-black bg-white p-8 rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="bg-[#93FFAB] p-2 border-2 border-black rounded-lg transform -rotate-3">
-          <Award className="w-8 h-8" />
+    <div className="border-2 sm:border-4 border-black bg-white p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl 
+      shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
+      <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+        <div className="bg-[#93FFAB] p-1.5 sm:p-2 border-2 border-black rounded-lg transform -rotate-3">
+          <Award className="w-6 h-6 sm:w-8 sm:h-8" />
         </div>
-        <h2 className="text-3xl font-black">CV Score Analysis</h2>
+        <h2 className="text-xl sm:text-3xl font-black">{t('score.title')}</h2>
       </div>
       
-      <div className="space-y-6">
-        {Object.entries(defaultScore).map(([key, value]) => (
-          <div key={key} className="space-y-2">
+      <div className="space-y-4 sm:space-y-6">
+        {Object.entries(score).map(([key, value]) => (
+          <div key={key} className="space-y-1 sm:space-y-2">
             <div className="flex justify-between items-center">
-              <span className="font-bold text-lg capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{getScoreEmoji(value)}</span>
-                <span className="font-black text-xl bg-black text-white px-3 py-1 rounded-lg">
-                  {Math.round(value)}%
+              <span className="font-bold text-base sm:text-lg capitalize">
+                {t(`score.${key}`)}
+              </span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-xl sm:text-2xl">{getScoreEmoji(value)}</span>
+                <span className="font-black text-lg sm:text-xl bg-black text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg">
+                  {value}%
                 </span>
               </div>
             </div>
-            <div className="w-full h-6 bg-gray-100 rounded-full border-3 border-black p-1">
+            <div className="w-full h-4 sm:h-6 bg-gray-100 rounded-full border-2 sm:border-3 border-black p-1">
               <div
                 className={`h-full rounded-full ${getScoreColor(value)} border-r-2 border-black
                   transition-all duration-500 ease-out`}
-                style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+                style={{ width: `${value}%` }}
               >
                 <div className="w-full h-full relative">
                   <Zap 
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2"
-                    size={16}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-3 h-3 sm:w-4 sm:h-4"
+                    size={12}
                   />
                 </div>
               </div>
             </div>
-            <p className="text-sm text-gray-600">{getScoreDescription(key.replace(/([A-Z])/g, ' $1'), value)}</p>
           </div>
         ))}
       </div>
